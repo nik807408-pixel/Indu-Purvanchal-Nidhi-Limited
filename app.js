@@ -926,6 +926,8 @@ async function saveClient() {
   btn.disabled = true; btn.textContent = '📸 Uploading...';
 
   let photoUrl = null;
+  let aadhaarPhotoPath = null;
+  let panPhotoPath = null;
   // Upload profile photo first
   if (selectedPhotoFile) {
     btn.textContent = '📸 Profile photo...';
@@ -946,7 +948,7 @@ async function saveClient() {
       const compressed = await compressImage(aadhaarPhotoFile, 50);
       const path = currentUser.id + '/aadhaar_' + Date.now() + '.jpg';
       const { data: up } = await db.storage.from('client-photos').upload(path, compressed, { upsert: true, contentType: 'image/jpeg' });
-      if (up) { payload.aadhaar_photo = path; }
+      if (up) { aadhaarPhotoPath = path; }
     } catch(e) { console.error('Aadhaar upload error:', e); }
   }
 
@@ -957,7 +959,7 @@ async function saveClient() {
       const compressed = await compressImage(panPhotoFile, 50);
       const path = currentUser.id + '/pan_' + Date.now() + '.jpg';
       const { data: up } = await db.storage.from('client-photos').upload(path, compressed, { upsert: true, contentType: 'image/jpeg' });
-      if (up) { payload.pan_photo = path; }
+      if (up) { panPhotoPath = path; }
     } catch(e) { console.error('PAN upload error:', e); }
   }
 
@@ -1010,6 +1012,8 @@ async function saveClient() {
   };
   if (custId) payload.customer_id = custId;
   if (photoUrl) payload.photo_url = photoUrl;
+  if (aadhaarPhotoPath) payload.aadhaar_photo = aadhaarPhotoPath;
+  if (panPhotoPath) payload.pan_photo = panPhotoPath;
   console.log('Final payload photo_url:', photoUrl);
   console.log('Saving client with', Object.keys(payload).filter(k => payload[k]).length, 'fields');
 
