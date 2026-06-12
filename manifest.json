@@ -1,0 +1,25 @@
+{
+  "name": "Indu Purvanchal Nidhi Limited",
+  "short_name": "Indu Purvanchal",
+  "description": "Indu Purvanchal Nidhi Limited — Finance Management",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a6e4f",
+  "theme_color": "#0a6e4f",
+  "orientation": "portrait",
+  "lang": "hi",
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
