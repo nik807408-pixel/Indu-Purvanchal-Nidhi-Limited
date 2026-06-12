@@ -3,30 +3,30 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-  <meta name="theme-color" content="#0f2547"/>
+  <meta name="theme-color" content="#065f46"/>
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="Indu Purvanchal Nidhi"/>
   <title>Indu Purvanchal Nidhi Limited</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23cc0000'/><text y='.9em' font-size='80' x='10' fill='%23FFD700'>ॐ</text></svg>"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a6e4f'/><text y='.9em' font-size='70' x='14' fill='%23fde68a'>🪔</text></svg>"/>
   <link rel="manifest" href="manifest.json?v=3"/>
   <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Playfair+Display:wght@700&family=Lato:wght@400;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    :root{--navy:#0f2547;--navy2:#1a3a6b;--gold:#ff9900;--gold2:#ffb732;--bg:#f0f4f8;--white:#fff;--text:#0f2547;--muted:#64748b;--border:#e2e8f0;--danger:#ef4444;--success:#22c55e;--warning:#f59e0b;--purple:#7c3aed;}
+    :root{--navy:#065f46;--navy2:#0f8a63;--gold:#ff9900;--gold2:#ffb732;--bg:#f0f4f8;--white:#fff;--text:#065f46;--muted:#64748b;--border:#e2e8f0;--danger:#ef4444;--success:#22c55e;--warning:#f59e0b;--purple:#7c3aed;}
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
     .hindi{font-family:'Tiro Devanagari Hindi','Lato',sans-serif}
-    #splash{position:fixed;inset:0;background:linear-gradient(160deg,#0f2547,#071228);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:9999;transition:opacity .5s}
-    .sp-icon{width:88px;height:88px;border-radius:22px;background:linear-gradient(145deg,#1a3a6b,#071228);display:flex;align-items:center;justify-content:center;box-shadow:0 16px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(200,170,90,.2)}
+    #splash{position:fixed;inset:0;background:linear-gradient(160deg,#0f8a63,#052e22);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:9999;transition:opacity .5s}
+    .sp-icon{width:88px;height:88px;border-radius:22px;background:linear-gradient(145deg,#14b886,#052e22);display:flex;align-items:center;justify-content:center;box-shadow:0 16px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,153,0,.2)}
     .sp-title{font-family:'Playfair Display',serif;font-size:28px;color:#f0f4f8}.sp-title span{color:var(--gold)}
     .sp-hindi{font-family:'Tiro Devanagari Hindi',serif;font-size:13px;color:rgba(200,170,90,.6);letter-spacing:1px}
     .dots{display:flex;gap:6px;margin-top:6px}
     .dot{width:7px;height:7px;border-radius:50%;background:rgba(200,170,90,.35);animation:blink 1.4s infinite}
     .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
     @keyframes blink{0%,80%,100%{opacity:.3;transform:scale(.85)}40%{opacity:1;transform:scale(1)}}
-    #auth-screen{display:none;min-height:100vh;background:linear-gradient(160deg,#0f2547,#071228);align-items:center;justify-content:center;padding:20px}
+    #auth-screen{display:none;min-height:100vh;background:linear-gradient(160deg,#0f8a63,#052e22);align-items:center;justify-content:center;padding:20px}
     .auth-card{background:white;border-radius:24px;padding:32px 24px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
     .auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px}
     .auth-logo-icon{width:42px;height:42px;border-radius:10px;background:transparent;display:flex;align-items:center;justify-content:center}
@@ -209,7 +209,7 @@
       <text x="26" y="33" text-anchor="middle" font-family="serif" font-size="20" font-weight="700" fill="#ff9900">ॐ</text>
     </svg>
   </div>
-  <div class="sp-title" style="font-size:22px">संकट <span style="color:#ff9900">मोचन</span></div>
+  <div class="sp-title" style="font-size:22px">इन्दु <span style="color:#ff9900">पूर्वांचल</span></div>
   <div class="sp-hindi hindi" style="color:rgba(255,153,0,.7)">Finance Management</div>
   <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
 </div>
@@ -220,20 +220,19 @@
     <div class="auth-logo">
       <div class="auth-logo-icon">
 <svg width="26" height="26" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="52" height="52" rx="12" fill="#0a6e4f"/>
-          <rect width="52" height="52" rx="12" fill="url(#redgrad2)"/>
+          <rect width="52" height="52" rx="12" fill="url(#grad2)"/>
           <defs>
-            <linearGradient id="redgrad2" x1="0" y1="0" x2="52" y2="52">
-              <stop offset="0%" stop-color="#ff1a1a"/>
-              <stop offset="100%" stop-color="#990000"/>
+            <linearGradient id="grad2" x1="0" y1="0" x2="52" y2="52">
+              <stop offset="0%" stop-color="#0f8a63"/>
+              <stop offset="100%" stop-color="#063d2c"/>
             </linearGradient>
           </defs>
-          <text x="26" y="20" text-anchor="middle" font-family="serif" font-size="11" font-weight="700" fill="white" letter-spacing="1">संकट</text>
-          <text x="26" y="34" text-anchor="middle" font-family="serif" font-size="11" font-weight="700" fill="#FFD700" letter-spacing="1">मोचन</text>
-          <text x="26" y="46" text-anchor="middle" font-family="serif" font-size="8" font-weight="400" fill="rgba(255,255,255,0.7)">Finance</text>
+          <text x="26" y="20" text-anchor="middle" font-family="serif" font-size="11" font-weight="700" fill="white" letter-spacing="1">इन्दु</text>
+          <text x="26" y="34" text-anchor="middle" font-family="serif" font-size="9" font-weight="700" fill="#fde68a" letter-spacing="0">पूर्वांचल</text>
+          <text x="26" y="46" text-anchor="middle" font-family="serif" font-size="8" font-weight="400" fill="rgba(255,255,255,0.7)">Nidhi</text>
         </svg>
       </div>
-      <div class="auth-logo-text" style="font-family:serif">संकट <span style="color:#ff9900">मोचन</span></div>
+      <div class="auth-logo-text" style="font-family:serif">इन्दु <span style="color:#ff9900">पूर्वांचल</span></div>
     </div>
 
     <div id="login-form">
@@ -272,7 +271,7 @@
 <!-- APP -->
 <div id="app">
   <div class="topbar">
-    <div class="topbar-logo" style="font-family:serif;font-size:16px;display:flex;align-items:center;gap:8px"><svg width="28" height="28" viewBox="0 0 52 52" fill="none"><rect width="52" height="52" rx="10" fill="url(#tg)"/><defs><linearGradient id="tg" x1="0" y1="0" x2="52" y2="52"><stop offset="0%" stop-color="#ff1a1a"/><stop offset="100%" stop-color="#880000"/></linearGradient></defs><text x="26" y="20" text-anchor="middle" font-family="serif" font-size="11" font-weight="700" fill="white" letter-spacing="1">संकट</text><text x="26" y="34" text-anchor="middle" font-family="serif" font-size="11" font-weight="700" fill="#FFD700" letter-spacing="1">मोचन</text><text x="26" y="46" text-anchor="middle" font-family="serif" font-size="8" fill="rgba(255,255,255,.7)">Finance</text></svg><span>संकट <span style="color:#ff9900">मोचन</span></span></div>
+    <div class="topbar-logo" style="font-family:serif;font-size:16px;display:flex;align-items:center;gap:8px"><svg width="28" height="28" viewBox="0 0 52 52" fill="none"><rect width="52" height="52" rx="10" fill="url(#tg)"/><defs><linearGradient id="tg" x1="0" y1="0" x2="52" y2="52"><stop offset="0%" stop-color="#0f8a63"/><stop offset="100%" stop-color="#063d2c"/></linearGradient></defs><text x="26" y="20" text-anchor="middle" font-family="serif" font-size="11" font-weight="700" fill="white" letter-spacing="1">इन्दु</text><text x="26" y="34" text-anchor="middle" font-family="serif" font-size="9" font-weight="700" fill="#fde68a" letter-spacing="0">पूर्वांचल</text><text x="26" y="46" text-anchor="middle" font-family="serif" font-size="8" fill="rgba(255,255,255,.7)">Nidhi</text></svg><span>इन्दु <span style="color:#ff9900">पूर्वांचल</span></span></div>
     <div class="topbar-right">
       
       <div class="user-badge">
