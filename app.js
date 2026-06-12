@@ -248,7 +248,7 @@ function renderDashboard(c) {
 
   c.innerHTML = `
     <!-- Welcome Header -->
-    <div style="background:linear-gradient(135deg,#1a2e4a,#2d4a7a);border-radius:16px;padding:16px;margin-bottom:16px;color:white">
+    <div style="background:linear-gradient(135deg,#0a6e4f,#14b886);border-radius:16px;padding:16px;margin-bottom:16px;color:white">
       <div style="font-size:20px;font-weight:800">नमस्ते, ${currentProfile.name?.split(' ')[0]} 👋</div>
       <div style="font-size:11px;opacity:.7;margin-top:2px">आपका वित्त सारांश — Your Finance Overview</div>
       <div style="font-size:11px;opacity:.7;margin-top:2px">${new Date().toLocaleDateString('hi-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
@@ -420,7 +420,7 @@ function renderCharts() {
       data: {
         labels: top5.map(c => c.name?.split(' ')[0] || 'N/A'),
         datasets: [{ label: 'Balance (₹)', data: top5.map(c => parseFloat(c.balance)||0),
-          backgroundColor: ['#0f2547','#1a3a6b','#c8aa5a','#22c55e','#7c3aed'],
+          backgroundColor: ['#065f46','#0f8a63','#c8aa5a','#22c55e','#7c3aed'],
           borderRadius: 8 }]
       },
       options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
@@ -1350,7 +1350,7 @@ function renderInvoicesPage(c) {
   ` : `
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:4px">
 
-    <div onclick="moreTab='emi';showPage('invoices')" style="background:linear-gradient(135deg,#1a2e4a,#2d4a7a);border-radius:16px;padding:20px;cursor:pointer;color:white;text-align:center;box-shadow:0 4px 12px rgba(26,46,74,.3)">
+    <div onclick="moreTab='emi';showPage('invoices')" style="background:linear-gradient(135deg,#0a6e4f,#14b886);border-radius:16px;padding:20px;cursor:pointer;color:white;text-align:center;box-shadow:0 4px 12px rgba(26,46,74,.3)">
       <div style="font-size:32px;margin-bottom:8px">📅</div>
       <div style="font-size:14px;font-weight:700">EMI Tracker</div>
       <div style="font-size:10px;opacity:.7;margin-top:2px">किस्त ट्रैकर</div>
@@ -1940,7 +1940,7 @@ function buildMonthlyReportHTML(month) {
   <div style="background:white;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(15,37,71,.08)">
     <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">Employee-wise Collection <span class="hindi">/ कर्मचारी-वार वसूली</span></div>
     <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#1a2e4a;color:white">
+      <thead><tr style="background:#0a6e4f;color:white">
         <th style="border:1px solid #ddd;padding:6px;font-size:12px;text-align:left">Employee</th>
         <th style="border:1px solid #ddd;padding:6px;font-size:12px">Entries</th>
         <th style="border:1px solid #ddd;padding:6px;font-size:12px;text-align:right">Amount</th>
@@ -1958,7 +1958,7 @@ function buildMonthlyReportHTML(month) {
 function printMonthlyReport() {
   const html = `<!DOCTYPE html><html><head><title>Monthly Report - ${monthlyMonth}</title>
   <style>body{font-family:Arial,sans-serif;margin:10mm}table{width:100%;border-collapse:collapse}
-  th,td{border:1px solid #999;padding:6px;font-size:12px}th{background:#1a2e4a;color:white}
+  th,td{border:1px solid #999;padding:6px;font-size:12px}th{background:#0a6e4f;color:white}
   @media print{@page{margin:10mm}}</style></head><body>
   ${getPrintableHTML('monthly-print-area')}</body></html>`;
   const w = window.open('', '_blank');
@@ -2245,7 +2245,7 @@ function printLoanCard(clientId) {
   .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 10px; }
   .company-name { font-size: 18px; font-weight: bold; }
   .company-sub { font-size: 11px; }
-  .section-title { background: #1a2e4a; color: white; text-align: center; padding: 5px; font-weight: bold; font-size: 13px; margin: 10px 0 6px; }
+  .section-title { background: #0a6e4f; color: white; text-align: center; padding: 5px; font-weight: bold; font-size: 13px; margin: 10px 0 6px; }
   table { width: 100%; border-collapse: collapse; }
   td, th { border: 1px solid #999; padding: 5px 8px; font-size: 11px; }
   .label { color: #444; font-weight: 600; width: 35%; background: #f5f5f5; }
@@ -2560,7 +2560,7 @@ function printCashBook() {
   if(!area) return;
   const html = `<!DOCTYPE html><html><head><title>Cash Book - ${date}</title>
   <style>body{font-family:Arial,sans-serif;margin:10mm}table{width:100%;border-collapse:collapse}
-  th,td{border:1px solid #999;padding:6px;font-size:12px}th{background:#1a2e4a;color:white}
+  th,td{border:1px solid #999;padding:6px;font-size:12px}th{background:#0a6e4f;color:white}
   @media print{@page{margin:10mm}}</style></head><body>
   <h2 style="text-align:center;margin-bottom:4px">इन्दु पूर्वांचल निधि लि. — Cash Book</h2>
   <p style="text-align:center;font-size:12px;margin-top:0">Day: <b>${day}</b> &nbsp; Date: <b>${date}</b></p>
@@ -2744,7 +2744,7 @@ function printCollReg() {
   const html = `<!DOCTYPE html><html><head><title>Collection Register - ${date}</title>
   <style>body{font-family:Arial,sans-serif;margin:8mm;font-size:11px}
   table{width:100%;border-collapse:collapse}th,td{border:1px solid #999;padding:5px;font-size:10px}
-  th{background:#1a2e4a;color:white}
+  th{background:#0a6e4f;color:white}
   button{display:none}@media print{@page{size:landscape;margin:8mm}}</style>
   </head><body>${getPrintableHTML('collreg-print-area')}</body></html>`;
   const w = window.open('','_blank');
@@ -2894,7 +2894,7 @@ function renderMeetingTab() {
     // Main Table
     html += '<div style="overflow-x:auto">';
     html += '<table style="width:100%;border-collapse:collapse;font-size:10px;min-width:800px">';
-    html += '<thead><tr style="background:#1a2e4a;color:white">';
+    html += '<thead><tr style="background:#0a6e4f;color:white">';
     html += '<th style="padding:5px 4px;border:1px solid #444">LOAN NO.</th>';
     html += '<th style="padding:5px 4px;border:1px solid #444">CLIENT NAME</th>';
     html += '<th style="padding:5px 4px;border:1px solid #444">LOAN AMT</th>';
@@ -2953,7 +2953,7 @@ function renderMeetingTab() {
     });
 
     // Total Row
-    html += '<tr style="background:#f0f4f8;font-weight:700;border-top:2px solid #1a2e4a">';
+    html += '<tr style="background:#f0f4f8;font-weight:700;border-top:2px solid #0a6e4f">';
     html += '<td colspan="2" style="padding:6px 4px;border:1px solid #ddd">Total</td>';
     html += '<td style="padding:6px 4px;border:1px solid #ddd;text-align:right">'+fmt(totalLoan)+'</td>';
     html += '<td colspan="2" style="border:1px solid #ddd"></td>';
@@ -2990,7 +2990,7 @@ function renderMeetingTab() {
     
     // Print button
     html += '<div style="text-align:center;padding:10px">';
-    html += '<button onclick="printMeetingSheet()" style="background:#1a2e4a;color:white;border:none;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:700;cursor:pointer">🖨️ Print CDS</button>';
+    html += '<button onclick="printMeetingSheet()" style="background:#0a6e4f;color:white;border:none;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:700;cursor:pointer">🖨️ Print CDS</button>';
     html += '</div>';
     
     html += '</div>'; // end card
@@ -3341,14 +3341,14 @@ async function downloadClientPDF(clientId) {
   const printContent = `
     <html><head><title>Client Report - ${c.name}</title>
     <style>
-      body{font-family:Arial,sans-serif;padding:20px;color:#0f2547}
-      h1{color:#0f2547;border-bottom:3px solid #c8aa5a;padding-bottom:8px}
+      body{font-family:Arial,sans-serif;padding:20px;color:#065f46}
+      h1{color:#065f46;border-bottom:3px solid #c8aa5a;padding-bottom:8px}
       .section{margin:16px 0;padding:12px;background:#f8fafc;border-radius:8px}
       .section h3{color:#c8aa5a;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
       .row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e2e8f0;font-size:13px}
       .label{color:#64748b}.value{font-weight:600}
       table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
-      th{background:#0f2547;color:white;padding:7px 10px;text-align:left}
+      th{background:#065f46;color:white;padding:7px 10px;text-align:left}
       td{padding:7px 10px;border-bottom:1px solid #e2e8f0}
       tr:nth-child(even){background:#f8fafc}
       @media print{button{display:none}}
@@ -3413,7 +3413,7 @@ async function downloadClientPDF(clientId) {
         </table>` : '<p style="color:#64748b;font-size:13px">No payments yet</p>'}
       </div>
 
-      <button onclick="window.print()" style="background:#0f2547;color:white;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px">🖨️ Print</button>
+      <button onclick="window.print()" style="background:#065f46;color:white;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px">🖨️ Print</button>
     </body></html>
   `;
 
@@ -4272,7 +4272,7 @@ function printMeetingSheet() {
   .info-table td { border:1px solid #000; padding:3px 5px; font-size:9px; }
   .cds-table { width:100%; border-collapse:collapse; margin-bottom:6px; }
   .cds-table th { 
-    background:#1a2e4a; color:white; 
+    background:#0a6e4f; color:white; 
     padding:3px 4px; border:1px solid #444; 
     font-size:8px; white-space:nowrap;
   }
