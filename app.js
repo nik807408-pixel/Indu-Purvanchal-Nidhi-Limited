@@ -4533,3 +4533,338 @@ async function deletePayment(paymentId) {
     showToast('Delete failed! Try again', 'error');
   }
 }
+
+
+// ═══════════════════════════════════════════════════════════════
+// HELP ASSISTANT — features overview + "kaise use kare" voice Q&A
+// ═══════════════════════════════════════════════════════════════
+const HELP_GUIDE = [
+  { keys:['dashboard','डैशबोर्ड','overview','summary'], icon:'📊', title:'Dashboard / डैशबोर्ड',
+    steps:'Login karte hi Dashboard khulta hai. Yahan total clients, total loan, total received, outstanding aur LPF ek nazar mein dikhta hai. Neeche charts mein top clients aur collection trend dikhta hai.',
+    spoken:'Dashboard par aapko poore business ka saransh dikhta hai — kul grahak, kul loan, wasooli aur baki raqam.' },
+  { keys:['client','grahak','ग्राहक','add client','naya client','kyc'], icon:'👥', title:'Client Add / ग्राहक जोड़ें',
+    steps:'1. Neeche "ग्राहक" tab par jao\n2. "+ जोड़ें" button dabao\n3. Naam, phone, address bharo\n4. Phone par OTP verify karo\n5. Aadhaar/PAN photo upload karo (50KB tak auto-compress hota hai)\n6. Loan amount, EMI, center details bharo\n7. Save dabao',
+    spoken:'Grahak jodne ke liye neeche grahak tab par jaakar plus button dabayen, naam phone bharein, OTP verify karein, Aadhaar photo upload karein aur save karein.' },
+  { keys:['payment','jama','भुगतान','जमा','emi','collect','wasool','installment','kisht'], icon:'💳', title:'Payment Entry / भुगतान दर्ज',
+    steps:'1. Client kholo (ग्राहक list se naam par tap)\n2. "Payment" ya "+" button dabao\n3. Amount aur date bharo, Save\n\nYa Meeting Day page se Quick Pay karo. Ya 🎤 mic button dabakar bolo: "Ramesh 500 jama karo"',
+    spoken:'Payment ke liye client khol kar payment button dabayen, raqam bharein aur save karein. Ya mic dabakar bol dein — naam aur raqam.' },
+  { keys:['passbook','पासबुक','statement'], icon:'📔', title:'Passbook / पासबुक',
+    steps:'1. More tab → Passbook\n2. Client choose karo\n3. 12-week passbook dikhega — har kisht ki entry\n4. Multi-cycle: 1st/2nd cycle tabs upar hain\n5. Print button se print karo',
+    spoken:'More tab mein passbook kholen, grahak chunen — barah hafte ki passbook dikhegi, print bhi kar sakte hain.' },
+  { keys:['emi tracker','due','overdue','बकाया'], icon:'⏰', title:'EMI Tracker',
+    steps:'More → EMI Tracker. Yahan sabki due/overdue kishtein dikhती hain — aaj kiski EMI hai, kaun late hai.',
+    spoken:'EMI tracker mein aaj ki aur overdue kishtein dikhti hain.' },
+  { keys:['cash book','cashbook','कैश बुक','रोकड़'], icon:'📒', title:'Cash Book / कैश बुक',
+    steps:'1. More → Cash Book\n2. Date choose karo\n3. Opening, collection, kharcha, bank deposit bharo\n4. Note denominations (500×kitne, 100×kitne)\n5. Save — data Supabase mein save hota hai\n6. Print button se A4 print',
+    spoken:'Cash book mein rozana ka hisaab bharein — opening, collection, kharcha. Save aur print dono hota hai.' },
+  { keys:['collection register','collreg','संग्रह','register'], icon:'📋', title:'Collection Register',
+    steps:'More → Collection Reg. Har center ka due/pre/OD collection, LPF/LPC bharo. Total auto-calculate hota hai. Save + landscape print.',
+    spoken:'Collection register mein center-wise wasooli bharein, total apne aap judta hai.' },
+  { keys:['monthly report','report','रिपोर्ट','मासिक'], icon:'📊', title:'Monthly Report / मासिक रिपोर्ट',
+    steps:'More → Monthly Report. Month choose karo — total collection, disbursement, naye clients, employee-wise wasooli table dikhega. Print bhi hota hai.',
+    spoken:'Monthly report mein poore mahine ka collection, naye loan aur employee-wise wasooli dikhti hai.' },
+  { keys:['npa','default'], icon:'⚠️', title:'NPA Tracking',
+    steps:'Dashboard/More mein NPA section — jo clients lambi time se payment nahi kar rahe woh yahan dikhte hain.',
+    spoken:'NPA mein woh grahak dikhte hain jinki kisht lambe samay se nahi aayi.' },
+  { keys:['team','approve','employee','कर्मचारी','टीम','staff'], icon:'🏢', title:'Team / टीम (Admin only)',
+    steps:'1. Team tab (sirf admin ko dikhta hai)\n2. Naya employee app mein signup karega\n3. Tumhe "Pending" mein dikhega → Approve dabao → apna admin password daalo\n4. Employee ko hatana ho: 🚫 Deactivate dabao — uska access band, clients tumhe transfer',
+    spoken:'Team tab mein naye karmchari approve karein ya purane deactivate karein. Approve ke liye apna admin password dalna hota hai.' },
+  { keys:['loan card','print card','कार्ड'], icon:'🖨️', title:'Loan Card Print',
+    steps:'Client detail kholo → Loan Card Print button → SATIN-style card print hota hai client ko dene ke liye.',
+    spoken:'Client ke andar loan card print ka button hai — chhapkar grahak ko de sakte hain.' },
+  { keys:['voice','mic','awaaz','आवाज़','बोल'], icon:'🎤', title:'Voice Assistant / आवाज़ सहायक',
+    steps:'Neeche 🎤 button dabao aur bolo:\n• "Ramesh 500 jama karo" → payment (confirm ke baad save)\n• "Sunita ka balance batao" → outstanding sunayi dega\n\n❓ button se yeh help khulta hai.',
+    spoken:'Mic dabakar naam aur raqam bolen, confirm karne par payment save ho jata hai. Balance bhi puchh sakte hain.' },
+];
+
+function openHelpAssistant() {
+  const overlay = document.getElementById('voice-overlay');
+  const status = document.getElementById('voice-status');
+  overlay.classList.add('show');
+  status.innerHTML = `<b style="color:var(--navy)">❓ App Guide / ऐप गाइड</b>`;
+  renderHelpMenu();
+  speak('Is app mein yeh features hain. Kisi par tap karein, ya mic dabakar puchein — jaise, passbook kaise use karein.');
+}
+
+function renderHelpMenu() {
+  const body = document.getElementById('voice-body');
+  let html = `<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Feature par tap karo, ya 🎤 dabakar pucho: <i>"passbook kaise use kare?"</i></div>`;
+  HELP_GUIDE.forEach((h, i) => {
+    html += `<div class="voice-client-pick" onclick="showHelpTopic(${i})"><span>${h.icon} ${h.title}</span><span style="color:var(--muted)">›</span></div>`;
+  });
+  html += `<div class="voice-confirm-row">
+    <button class="voice-btn-no" onclick="closeVoiceSheet()">बंद करें</button>
+    <button class="voice-btn-yes" style="background:var(--navy)" onclick="toggleVoiceAssistant()">🎤 पूछें</button>
+  </div>`;
+  body.innerHTML = html;
+}
+
+function showHelpTopic(i) {
+  const h = HELP_GUIDE[i];
+  const body = document.getElementById('voice-body');
+  body.innerHTML = `
+    <div style="font-size:16px;font-weight:800;color:var(--navy);margin-bottom:8px">${h.icon} ${h.title}</div>
+    <div style="font-size:13.5px;line-height:1.7;color:var(--text);white-space:pre-line;background:var(--bg);border-radius:10px;padding:12px">${h.steps}</div>
+    <div class="voice-confirm-row">
+      <button class="voice-btn-no" onclick="renderHelpMenu()">‹ वापस</button>
+      <button class="voice-btn-yes" style="background:var(--navy)" onclick="speak(HELP_GUIDE[${i}].spoken)">🔊 सुनें</button>
+    </div>`;
+  window.speechSynthesis?.cancel();
+  speak(h.spoken);
+}
+
+function matchHelpTopic(text) {
+  const lower = text.toLowerCase();
+  let best = -1, bestScore = 0;
+  HELP_GUIDE.forEach((h, i) => {
+    let score = 0;
+    h.keys.forEach(k => { if (lower.includes(k) || text.includes(k)) score += k.length; });
+    if (score > bestScore) { bestScore = score; best = i; }
+  });
+  return best;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// VOICE ASSISTANT — payment entry & balance lookup, with confirmation
+// ═══════════════════════════════════════════════════════════════
+let voiceRecognition = null;
+let voicePendingPayment = null; // {clientId, amount}
+
+function toggleVoiceAssistant() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showToast('Browser mic support nahi hai! Chrome use karein.', 'error');
+    return;
+  }
+  const fab = document.getElementById('voice-fab');
+  if (fab.classList.contains('listening')) {
+    voiceRecognition?.stop();
+    return;
+  }
+
+  const overlay = document.getElementById('voice-overlay');
+  const status = document.getElementById('voice-status');
+  const body = document.getElementById('voice-body');
+  body.innerHTML = '';
+  status.textContent = '🎤 बोलिए... / Speak now...';
+  overlay.classList.add('show');
+  fab.classList.add('listening');
+
+  voiceRecognition = new SpeechRecognition();
+  voiceRecognition.lang = 'en-IN';
+  voiceRecognition.interimResults = true;
+  voiceRecognition.maxAlternatives = 1;
+
+  voiceRecognition.onresult = (e) => {
+    let text = '';
+    for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+    status.innerHTML = `<div class="voice-transcript">"${text}"</div>`;
+    if (e.results[0].isFinal) {
+      fab.classList.remove('listening');
+      handleVoiceCommand(text.trim());
+    }
+  };
+  voiceRecognition.onerror = (e) => {
+    fab.classList.remove('listening');
+    status.textContent = '';
+    body.innerHTML = `<div style="text-align:center;color:var(--danger);padding:10px">⚠️ Mic error: ${e.error}. Dobara try karein.</div>`;
+  };
+  voiceRecognition.onend = () => { fab.classList.remove('listening'); };
+  voiceRecognition.start();
+}
+
+function closeVoiceSheet() {
+  document.getElementById('voice-overlay').classList.remove('show');
+  document.getElementById('voice-fab').classList.remove('listening');
+  voiceRecognition?.stop();
+}
+
+function speak(text) {
+  try {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'hi-IN';
+    window.speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+// Devanagari → Roman, basic phonetic transliteration (helps match English-typed client names)
+function transliterateDevanagari(text) {
+  const map = {
+    'अ':'a','आ':'a','इ':'i','ई':'i','उ':'u','ऊ':'u','ए':'e','ऐ':'ai','ओ':'o','औ':'au',
+    'क':'k','ख':'kh','ग':'g','घ':'gh','च':'ch','छ':'chh','ज':'j','झ':'jh','ञ':'n',
+    'ट':'t','ठ':'th','ड':'d','ढ':'dh','ण':'n','त':'t','थ':'th','द':'d','ध':'dh','न':'n',
+    'प':'p','फ':'ph','ब':'b','भ':'bh','म':'m','य':'y','र':'r','ल':'l','व':'v','श':'sh','ष':'sh','स':'s','ह':'h',
+    'ं':'n','ँ':'n','ः':'h','्':'',
+    'ा':'a','ि':'i','ी':'i','ु':'u','ू':'u','े':'e','ै':'ai','ो':'o','ौ':'au','ृ':'ri'
+  };
+  let out = '';
+  for (const ch of text) out += (map[ch] !== undefined ? map[ch] : ch);
+  return out;
+}
+
+function normalizeForMatch(s) {
+  return (s || '').toLowerCase().replace(/[^\u0900-\u097Fa-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+const VOICE_PAY_WORDS = ['jama','jamaa','jma','collect','payment','pay','wasool','vasool','liya','diya','bharo','bhara','जमा','वसूल','भरो','भरा'];
+const VOICE_BAL_WORDS = ['balance','baki','bakaya','outstanding','kitna','kitni','batao','बैलेंस','बाकी','बकाया','कितना','कितनी','बताओ'];
+const VOICE_NUM_WORDS = {
+  'pachas':50,'pachaas':50,'पचास':50,
+  'ek sau':100,'sau':100,'ek so':100,'सौ':100,'एक सौ':100,
+  'do sau':200,'दो सौ':200,
+  'teen sau':300,'तीन सौ':300,
+  'char sau':400,'चार सौ':400,
+  'paanch sau':500,'panch sau':500,'पांच सौ':500,
+  'das sau':1000,'दस सौ':1000,
+  'ek hazar':1000,'ek hazaar':1000,'hazar':1000,'hazaar':1000,'एक हज़ार':1000,'एक हजार':1000,'हज़ार':1000,'हजार':1000,
+  'do hazar':2000,'do hazaar':2000,'दो हज़ार':2000,'दो हजार':2000,
+  'paanch hazar':5000,'paanch hazaar':5000,'पांच हज़ार':5000,'पांच हजार':5000,
+  'das hazar':10000,'das hazaar':10000,'दस हज़ार':10000,'दस हजार':10000
+};
+
+function extractVoiceAmount(text) {
+  const m = text.match(/\d+/);
+  if (m) return parseInt(m[0]);
+  const lower = text.toLowerCase();
+  for (const [word, val] of Object.entries(VOICE_NUM_WORDS)) {
+    if (lower.includes(word) || text.includes(word)) return val;
+  }
+  return null;
+}
+
+function matchClientsByVoice(spokenText) {
+  let cleaned = spokenText.toLowerCase();
+  [...VOICE_PAY_WORDS, ...VOICE_BAL_WORDS, 'ka','ki','ke','का','की','के','रुपये','रुपए','rupiye','rupaye','rupees','rs','₹'].forEach(w => {
+    cleaned = cleaned.split(w).join(' ');
+  });
+  cleaned = cleaned.replace(/\d+/g, ' ');
+  const norm = normalizeForMatch(cleaned);
+  const roman = normalizeForMatch(transliterateDevanagari(norm));
+  const words = [...new Set([...norm.split(' '), ...roman.split(' ')])].filter(w => w.length > 1);
+  if (!words.length) return [];
+
+  const scored = allClients.map(c => {
+    const cname = normalizeForMatch(c.name);
+    let score = 0;
+    words.forEach(w => { if (cname.includes(w)) score += w.length; });
+    return { client: c, score };
+  }).filter(x => x.score > 0).sort((a, b) => b.score - a.score);
+  return scored;
+}
+
+function handleVoiceCommand(text) {
+  const status = document.getElementById('voice-status');
+  const body = document.getElementById('voice-body');
+  status.innerHTML = `<div class="voice-transcript">"${text}"</div>`;
+
+  const lower = text.toLowerCase();
+
+  // Help mode: "passbook kaise use kare", "madad", "features batao"
+  const HELP_WORDS = ['kaise','कैसे','help','madad','मदद','sikha','सिखा','guide','गाइड','feature','फीचर','use kare','इस्तेमाल'];
+  if (HELP_WORDS.some(w => lower.includes(w) || text.includes(w))) {
+    const topicIdx = matchHelpTopic(text);
+    if (topicIdx >= 0) { showHelpTopic(topicIdx); return; }
+    renderHelpMenu();
+    speak('Yeh saare features hain. Kisi par tap karein ya feature ka naam lekar puchein.');
+    return;
+  }
+
+  const isBalanceQuery = VOICE_BAL_WORDS.some(w => lower.includes(w) || text.includes(w));
+  const amount = isBalanceQuery ? null : extractVoiceAmount(text);
+  const matches = matchClientsByVoice(text);
+
+  if (!matches.length) {
+    body.innerHTML = `<div style="text-align:center;color:var(--muted);padding:10px 0">
+      😕 Client samajh nahi paya.<br>Naam clearly bolen, jaise: <b>"Ramesh Yadav 500 jama karo"</b>
+      <div class="voice-confirm-row"><button class="voice-btn-no" onclick="closeVoiceSheet()">बंद करें</button></div>
+    </div>`;
+    return;
+  }
+
+  if (matches.length > 1 && matches[0].score === matches[1].score) {
+    // disambiguation needed
+    let html = `<div style="font-size:13px;color:var(--muted);margin-bottom:8px">Konsa client? / Which client?</div>`;
+    matches.slice(0, 5).forEach(m => {
+      html += `<div class="voice-client-pick" onclick="voiceResolveClient('${m.client.id}', ${amount || 'null'}, ${isBalanceQuery})">
+        <span>${m.client.name}</span><span style="color:var(--muted);font-size:12px">₹${fmt(parseFloat(m.client.balance)||0)}</span>
+      </div>`;
+    });
+    html += `<div class="voice-confirm-row"><button class="voice-btn-no" onclick="closeVoiceSheet()">Cancel</button></div>`;
+    body.innerHTML = html;
+    return;
+  }
+
+  voiceResolveClient(matches[0].client.id, amount, isBalanceQuery);
+}
+
+function voiceResolveClient(clientId, amount, isBalanceQuery) {
+  const c = allClients.find(x => x.id === clientId);
+  const body = document.getElementById('voice-body');
+  if (!c) { closeVoiceSheet(); return; }
+
+  if (isBalanceQuery || !amount) {
+    const totalDue = (parseFloat(c.balance)||0) + (parseFloat(c.interest_amount)||0);
+    const paid = allPayments.filter(p => p.client_id === c.id && p.type === 'credit' && !(p.description||'').includes('DELETED'))
+      .reduce((s,p) => s + (parseFloat(p.amount)||0), 0);
+    const outstanding = Math.max(0, totalDue - paid);
+
+    body.innerHTML = `
+      <div style="text-align:center;padding:6px 0 4px">
+        <div style="font-size:16px;font-weight:800;color:var(--navy)">${c.name}</div>
+        <div style="font-size:13px;color:var(--muted);margin:6px 0">Loan Balance / Outstanding</div>
+        <div style="font-size:26px;font-weight:800;color:${outstanding>0?'var(--danger)':'var(--success)'}">₹${fmt(outstanding)}</div>
+      </div>
+      <div class="voice-confirm-row">
+        <button class="voice-btn-no" onclick="closeVoiceSheet()">बंद करें</button>
+      </div>`;
+    speak(`${c.name} ka outstanding ${outstanding} rupaye hai`);
+    return;
+  }
+
+  // Payment confirmation
+  voicePendingPayment = { clientId: c.id, amount };
+  body.innerHTML = `
+    <div style="text-align:center;padding:6px 0 4px">
+      <div style="font-size:16px;font-weight:800;color:var(--navy)">${c.name}</div>
+      <div style="font-size:13px;color:var(--muted);margin:6px 0">Payment Confirm karein</div>
+      <div style="font-size:28px;font-weight:800;color:var(--success)">₹${fmt(amount)}</div>
+    </div>
+    <div class="voice-confirm-row">
+      <button class="voice-btn-no" onclick="closeVoiceSheet()">❌ Cancel</button>
+      <button class="voice-btn-yes" onclick="confirmVoicePayment()">✅ Confirm / जमा करें</button>
+    </div>`;
+  speak(`${c.name} ko ${amount} rupaye, confirm karein`);
+}
+
+async function confirmVoicePayment() {
+  if (!voicePendingPayment) return;
+  const { clientId, amount } = voicePendingPayment;
+  const cl = allClients.find(c => c.id === clientId);
+  const body = document.getElementById('voice-body');
+  body.innerHTML = `<div style="text-align:center;color:var(--muted);padding:14px 0">Saving...</div>`;
+
+  try {
+    const today = new Date().toISOString().slice(0,10);
+    const { data, error } = await db.from('payments').insert({
+      client_id: clientId,
+      amount: parseFloat(amount),
+      type: 'credit',
+      description: 'Voice Entry / आवाज़ से दर्ज',
+      date: today,
+      created_by: currentUser?.id || null
+    }).select().single();
+    if (error) throw error;
+
+    allPayments.unshift(data);
+    showToast(`✅ ₹${fmt(amount)} — ${cl?.name||''}`, 'success');
+    speak(`${cl?.name||''} ka ${amount} rupaye jama ho gaya`);
+    body.innerHTML = `<div style="text-align:center;color:var(--success);font-weight:700;padding:14px 0">✅ ${cl?.name||''} — ₹${fmt(amount)} जमा हो गया!</div>`;
+    voicePendingPayment = null;
+    await loadAll();
+    setTimeout(closeVoiceSheet, 1500);
+  } catch (err) {
+    console.error('Voice payment error:', err);
+    body.innerHTML = `<div style="text-align:center;color:var(--danger);padding:14px 0">⚠️ Save failed: ${err.message||'Try again'}</div>
+      <div class="voice-confirm-row"><button class="voice-btn-no" onclick="closeVoiceSheet()">बंद करें</button></div>`;
+  }
+}
